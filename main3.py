@@ -39,7 +39,7 @@ def handle_navigation():
     global speed_base, kp
     cyberpi.stop_other()
     speed_base = 20
-    kp = speed_base / 100
+    kp = 0.22
 
     while True:
         # Obstacle detection
