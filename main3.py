@@ -70,7 +70,7 @@ def handle_navigation():
             while True:
                 if mbuild.quad_rgb_sensor.is_color("green", "any"):
                     set_led_color("green")
-                    print_msg("Green detected - moving again")
+                    print_msg("Green detected - resuming")
                     cyberpi.audio.play_tone(523, 1.0)
                     mbot2.forward(40, 1.0)
                     break
