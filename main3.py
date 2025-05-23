@@ -106,7 +106,9 @@ def handle_navigation():
         # Black line tracking
         if mbuild.quad_rgb_sensor.is_color("black", "L2"):
             black_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
-            drive_adjust(black_offset, speed_base * 0.7)
+            offset = mbuild.quad_rgb_sensor.get_offset_track(1)
+            right_power = (speed_base - kp * offset)
+            left_power = -1 * (speed_base + kp * offset) * 0.7
         if mbuild.quad_rgb_sensor.is_color("black", "R2"):
             offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             right_power = (speed_base - kp * offset) * 0.7
