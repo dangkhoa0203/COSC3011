@@ -58,7 +58,7 @@ def handle_navigation():
                 mbot2.turn(180, 20)
 
         # Red color detected
-        elif mbuild.quad_rgb_sensor.is_color("red", "any"):
+        if mbuild.quad_rgb_sensor.is_color("red", "any"):
             mbot2.EM_stop("all")
             mbot2.backward(30, 0.5)
             set_led_color("red")
@@ -83,7 +83,7 @@ def handle_navigation():
                 time.sleep(0.1)
 
         # Yellow - temporary slowdown
-        elif mbuild.quad_rgb_sensor.is_color("yellow", "any"):
+        if mbuild.quad_rgb_sensor.is_color("yellow", "any"):
             set_led_color("yellow")
             print_msg("Yellow sign - reducing speed")
             speed_base = 10
@@ -99,17 +99,17 @@ def handle_navigation():
             speed_base = 20
 
         # White path
-        elif mbuild.quad_rgb_sensor.is_color("white", "any"):
+        if mbuild.quad_rgb_sensor.is_color("white", "any"):
             offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             right_power = speed_base - kp * offset
             left_power = -1 * (speed_base + kp * offset)
             mbot2.drive_power(right_power, left_power)
 
         # Black line tracking
-        elif mbuild.quad_rgb_sensor.is_color("black", "L2"):
+        if mbuild.quad_rgb_sensor.is_color("black", "L2"):
             black_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             drive_adjust(black_offset, speed_base * 0.7)
-        elif mbuild.quad_rgb_sensor.is_color("black", "R2"):
+        if mbuild.quad_rgb_sensor.is_color("black", "R2"):
             offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             right_power = (speed_base - kp * offset) * 0.7
             left_power = -1 * (speed_base + kp * offset)
