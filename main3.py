@@ -100,22 +100,22 @@ def handle_navigation():
 
         # White path
         elif mbuild.quad_rgb_sensor.is_color("white", "any"):
-            set_led_color("white")
-            white_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
-            drive_adjust(white_offset, speed_base)
+            offset = mbuild.quad_rgb_sensor.get_offset_track(1)
+            right_power = speed_base - kp * offset
+            left_power = -1 * (speed_base + kp * offset) * 0.7
+            mbot2.drive_power(right_power, left_power)
 
         # Black line tracking
         elif mbuild.quad_rgb_sensor.is_color("black", "L2"):
             black_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             drive_adjust(black_offset, speed_base * 0.7)
         elif mbuild.quad_rgb_sensor.is_color("black", "R2"):
-            black_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
-            drive_adjust(black_offset, speed_base * 0.7)
+            offset = mbuild.quad_rgb_sensor.get_offset_track(1)
+            right_power = (speed_base - kp * offset) * 0.7
+            left_power = -1 * (speed_base + kp * offset)
+            mbot2.drive_power(right_power, left_power)
 
         time.sleep(0.05)
-
-    mbot2.EM_stop("all")
-    print_msg("Navigation ended")
 
 @event.is_press("middle")
 def color_debug_mode():
