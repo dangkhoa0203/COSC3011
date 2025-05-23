@@ -100,10 +100,8 @@ def handle_navigation():
 
         # White path
         if mbuild.quad_rgb_sensor.is_color("white", "any"):
-            offset = mbuild.quad_rgb_sensor.get_offset_track(1)
-            right_power = speed_base - kp * offset
-            left_power = -1 * (speed_base + kp * offset)
-            mbot2.drive_power(right_power, left_power)
+            offset_now = mbuild.quad_rgb_sensor.get_offset_track(1)
+            drive_adjust(offset_now, speed_base)
 
         # Black line tracking
         if mbuild.quad_rgb_sensor.is_color("black", "L2"):
