@@ -1,7 +1,7 @@
 import event, time, cyberpi, mbot2, mbuild
 
 # === Robot Parameters ===
-speed_base = 20
+speed_base = 30
 kp = 0
 motor_left = 0
 motor_right = 0
@@ -38,7 +38,7 @@ def handle_stop():
 def handle_navigation():
     global speed_base, kp
     cyberpi.stop_other()
-    speed_base = 20
+    speed_base = 30
     kp = 0.22
 
     while True:
@@ -67,36 +67,61 @@ def handle_navigation():
 
             wait_start = time.time()
             tone_time = wait_start
+        
             while True:
                 if mbuild.quad_rgb_sensor.is_color("green", "any"):
-                    set_led_color("green")
                     print_msg("Green detected - resuming")
+                    
+                    # Blink green for 2 seconds
+                    blink_start = time.time()
                     cyberpi.audio.play_tone(523, 1.0)
+                    while time.time() - blink_start < 3:
+                        cyberpi.led.show("green green green green green")
+                        time.sleep(0.2)
+                        cyberpi.led.off()
+                        time.sleep(0.2)
+
+
                     mbot2.forward(40, 1.0)
                     break
                 if time.time() - wait_start > 10:
+                    blink_start = time.time()
+                    while time.time() - blink_start < 2:
+                        cyberpi.led.show("red red red red red")
+                        time.sleep(0.2)
+                        cyberpi.led.off()
+                        time.sleep(0.2)
                     mbot2.turn(180, 20)
                     break
                 if time.time() - tone_time >= 2:
+                    
                     cyberpi.audio.play_tone(440, 0.5)
                     tone_time = time.time()
                 time.sleep(0.1)
 
         # Yellow - temporary slowdown
         if mbuild.quad_rgb_sensor.is_color("yellow", "any"):
+            mbot2.forward(30, 1.5)
             set_led_color("yellow")
             print_msg("Yellow sign - reducing speed")
             speed_base = 10
             slow_time = time.time()
             tone_time = slow_time
             while time.time() - slow_time < 5:
-                offset_now = mbuild.quad_rgb_sensor.get_offset_track(1)
-                drive_adjust(offset_now, speed_base)
+                
+                offset_slow = mbuild.quad_rgb_sensor.get_offset_track(1)
+                drive_adjust(offset_slow, speed_base)
+                # right_power = speed_base - kp * offset_slow
+                # left_power = -1 * (speed_base + kp * offset_slow)
+                # mbot2.drive_power(right_power, left_power)
                 if time.time() - tone_time >= 0.5:
                     cyberpi.audio.play_tone(330, 0.5)
                     tone_time = time.time()
+                
+                cyberpi.led.show("yellow yellow yellow yellow yellow")
                 time.sleep(0.05)
-            speed_base = 20
+            cyberpi.led.off()
+            speed_base = 30
 
         # White path
         if mbuild.quad_rgb_sensor.is_color("white", "any"):
@@ -105,7 +130,6 @@ def handle_navigation():
 
         # Black line tracking
         if mbuild.quad_rgb_sensor.is_color("black", "L2"):
-            black_offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             offset = mbuild.quad_rgb_sensor.get_offset_track(1)
             right_power = (speed_base - kp * offset)
             left_power = -1 * (speed_base + kp * offset) * 0.7
